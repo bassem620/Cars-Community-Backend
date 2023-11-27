@@ -11,6 +11,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.use("/user", require("./routes/userRoutes"));
+app.use("/items", require("./routes/itemRoutes"));
 
 // Not Found Route
 app.all('*', (req, res) => {
