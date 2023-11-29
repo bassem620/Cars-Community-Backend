@@ -3,7 +3,6 @@ const express = require('express');
 // Controllers
 const {
     getAllAppointments,
-    getOneAppointment,
     myAppointments,
     addAppointment,
     deleteAppointment
@@ -15,13 +14,10 @@ const router = express.Router();
 // User routes
 router.route("/addAppointment").post(addAppointment);
 router.route("/myAppointments").get(myAppointments);
+router.route("/deleteAppointment/:id").delete(deleteAppointment);
 
 // Admin routes
 router.route("/all").get(getAllAppointments);
-
-// User & Admin routes
-router.route("/deleteAppointment/:id").delete(deleteAppointment);
-router.route("/:id").get(getOneAppointment);
 
 
 

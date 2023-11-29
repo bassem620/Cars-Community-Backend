@@ -56,33 +56,6 @@ exports.myAppointments = asyncHandler(async (req, res) => {
     });
 });
 
-exports.getOneAppointment = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    // Check if appointment id is valid
-    if(!mongoose.Types.ObjectId.isValid(id)){
-        return res.status(400).json({
-            status: "Failed",
-            statusCode: 400,
-            message: "Appointment id is invalid"
-        })
-    }
-    const appointment = await Appointment.findOne({_id: id});
-    // Check no errors happend when retrieving appointment
-    if(!appointment) {
-        return res.status(400).json({
-            status: "Failed",
-            statusCode: 400,
-            message: "Appointment is not found"
-        })
-    }
-    // return success response
-    res.status(200).json({
-        status: "Success",
-        statusCode: 200,
-        data: appointment
-    });
-});
-
 exports.addAppointment = asyncHandler(async (req, res) => {
     const { userId, date } = req.body;
     const user = await checkUser(res, userId, "user");
