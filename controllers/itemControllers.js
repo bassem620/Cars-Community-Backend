@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const asyncHandler = require('express-async-handler');
+const checkUser = require('../functions/checkUser');
 
 // Item database model
 const Item = require("../models/itemModel");
