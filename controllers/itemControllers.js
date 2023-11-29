@@ -78,7 +78,9 @@ exports.compareTwoItems = asyncHandler(async (req, res) => {
 });
 
 exports.addItem = asyncHandler(async (req, res) => {
-    const { title, desc, price, image } = req.body;
+    const { title, desc, price, image, userId } = req.body;
+    const user = await checkUser(res, userId, "admin");
+    if(!user) return;
     // Check all required fields are sent in the request
     if(!title || !desc || !price || !image) {
         return res.status(400).json({
@@ -108,14 +110,17 @@ exports.addItem = asyncHandler(async (req, res) => {
 
 exports.deleteItem = asyncHandler(async (req, res) => {
     const { id } = req.params;
-        // Check if item id is valid
-        if(!mongoose.Types.ObjectId.isValid(id)){
-            return res.status(400).json({
-                status: "Failed",
-                statusCode: 400,
-                message: "Item id is invalid"
-            })
-        }
+    const { userId } = req.body;
+    const user = await checkUser(res, userId, "admin");
+    if(!user) return;
+    // Check if item id is valid
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({
+            status: "Failed",
+            statusCode: 400,
+            message: "Item id is invalid"
+        })
+    }
     const item = await Item.findOne({_id: id});
     // Check if the needed item exists
     if(!item) {
