@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const asyncHandler = require('express-async-handler');
+const checkUser = require('../functions/checkUser');
 
 // Appointment database model
 const Appointment = require("../models/appointmentModel");
-const checkUser = require('../functions/checkUser');
 
 exports.getAllAppointments = asyncHandler(async (req, res) => {
     // Check if logged user is admin
