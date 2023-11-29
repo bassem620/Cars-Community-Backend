@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const asyncHandler = require('express-async-handler');
+const checkUser = require('../functions/checkUser');
 
 // News database model
 const News = require("../models/newsModel");
@@ -50,7 +51,9 @@ exports.getOneNews = asyncHandler(async (req, res) => {
 });
 
 exports.addNews = asyncHandler(async (req, res) => {
-    const { title, desc } = req.body;
+    const { title, desc, userId } = req.body;
+    const user = await checkUser(res, userId, "admin");
+    if(!user) return;
     // Check all required fields are sent in the request
     if(!title || !desc) {
         return res.status(400).json({
@@ -80,14 +83,17 @@ exports.addNews = asyncHandler(async (req, res) => {
 
 exports.deleteNews = asyncHandler(async (req, res) => {
     const { id } = req.params;
-        // Check if news id is valid
-        if(!mongoose.Types.ObjectId.isValid(id)){
-            return res.status(400).json({
-                status: "Failed",
-                statusCode: 400,
-                message: "New id is invalid"
-            })
-        }
+    const { userId } = req.body;
+    const user = await checkUser(res, userId, "admin");
+    if(!user) return;
+    // Check if news id is valid
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({
+            status: "Failed",
+            statusCode: 400,
+            message: "New id is invalid"
+        })
+    }
     const news = await News.findOne({_id: id});
     // Check if the needed new exists
     if(!news) {
