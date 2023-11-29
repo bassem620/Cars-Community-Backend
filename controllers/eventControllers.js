@@ -50,7 +50,9 @@ exports.getOneEvent = asyncHandler(async (req, res) => {
 });
 
 exports.addEvent = asyncHandler(async (req, res) => {
-    const { title, desc, location, date } = req.body;
+    const { title, desc, location, date, userId } = req.body;
+    const user = await checkUser(res, userId, "admin");
+    if(!user) return;
     // Check all required fields are sent in the request
     if(!title || !desc || !location || !date) {
         return res.status(400).json({
@@ -80,14 +82,17 @@ exports.addEvent = asyncHandler(async (req, res) => {
 
 exports.deleteEvent = asyncHandler(async (req, res) => {
     const { id } = req.params;
-        // Check if event id is valid
-        if(!mongoose.Types.ObjectId.isValid(id)){
-            return res.status(400).json({
-                status: "Failed",
-                statusCode: 400,
-                message: "Event id is invalid"
-            })
-        }
+    const { userId } = req.body;
+    const user = await checkUser(res, userId, "admin");
+    if(!user) return;
+    // Check if event id is valid
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({
+            status: "Failed",
+            statusCode: 400,
+            message: "Event id is invalid"
+        })
+    }
     const event = await Event.findOne({_id: id});
     // Check if the needed event exists
     if(!event) {
