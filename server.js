@@ -14,6 +14,7 @@ app.use("/user", require("./routes/userRoutes"));
 app.use("/items", require("./routes/itemRoutes"));
 app.use("/news", require("./routes/newsRoutes"));
 app.use("/events", require("./routes/eventRoutes"));
+app.use("/appointments", require("./routes/appointmentRoutes"));
 
 // Not Found Route
 app.all('*', (req, res) => {
