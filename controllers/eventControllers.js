@@ -50,9 +50,9 @@ exports.getOneEvent = asyncHandler(async (req, res) => {
 });
 
 exports.addEvent = asyncHandler(async (req, res) => {
-    const { title, desc, price, image } = req.body;
+    const { title, desc, location, date } = req.body;
     // Check all required fields are sent in the request
-    if(!title || !desc || !price || !image) {
+    if(!title || !desc || !location || !date) {
         return res.status(400).json({
             status: "Failed",
             statusCode: 400,
