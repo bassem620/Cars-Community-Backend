@@ -28,9 +28,9 @@ const userSchema = mongoose.Schema({
         enum: ['user', 'admin'],
         default: 'user'
     },
-    liked: [{
+    favorites: [{
         type: mongoose.Schema.ObjectId,
-        ref: 'Item',
+        ref: 'Car',
         default: []
     }],
 }, {timestamps: true});

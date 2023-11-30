@@ -6,7 +6,8 @@ const {
     getOneCar,
     compareTwoCars,
     addCar,
-    deleteCar
+    deleteCar,
+    likeChange
 } = require("../controllers/carControllers");
 
 // Router
@@ -19,6 +20,7 @@ router.route("/deleteCar/:id").delete(deleteCar);
 // User routes
 router.route("/all").get(getAllCars);
 router.route("/compare").get(compareTwoCars);
+router.route("/likeChange/:id").post(likeChange);
 router.route("/:id").get(getOneCar);
 
 

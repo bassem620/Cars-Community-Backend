@@ -4,8 +4,9 @@ const asyncHandler = require('express-async-handler');
 const checkUser = require('../functions/checkUser');
 const errorResponse = require('../functions/errorResponse');
 
-// Car database model
+// Car & User database model
 const Car = require("../models/carModel");
+const User = require("../models/userModel");
 
 exports.getAllCars = asyncHandler(async (req, res) => {
     const cars = await Car.find({});
@@ -78,8 +79,8 @@ exports.deleteCar = asyncHandler(async (req, res) => {
     if(!user) return;
     // Check if car id is valid
     if(!mongoose.Types.ObjectId.isValid(id)) return errorResponse(res, 400, "Car id is invalid");
-    const car = await Car.findOne({_id: id});
     // Check if the needed car exists
+    const car = await Car.findOne({_id: id});
     if(!car) {
         // 404 = NOT FOUND
         return errorResponse(res, 404, "This car is not found");
@@ -95,3 +96,56 @@ exports.deleteCar = asyncHandler(async (req, res) => {
     // return fail response
     return errorResponse(res, 400, "Error occured during deleting the ite");
 });
+
+exports.likeChange = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { userId, newLikeState } = req.body;
+    // Check user
+    const user = await checkUser(res, userId, "user");
+    if(!user) return;
+    // Check if car id is valid
+    if(!mongoose.Types.ObjectId.isValid(id)) return errorResponse(res, 400, "Car id is invalid");
+    // Check if the needed car exists
+    const car = await Car.findOne({_id: id});
+    if(!car) {
+        // 404 = NOT FOUND
+        return errorResponse(res, 404, "This car is not found");
+    }
+    // check that newLikeState is sent in the request
+    if(newLikeState !== true && newLikeState !== false) {
+        return errorResponse(res, 400, "New like state is required");
+    }
+    // logic based on newLikeState
+    if(newLikeState === true) {
+        await likeCar(res, user, id);
+    } else if (newLikeState === false) {
+        await unlikeCar(res, user, id);
+    }
+    return;
+});
+
+const likeCar = async (res, user, carId) => {
+    const updatedUser = await User.findByIdAndUpdate(
+        user._id,
+        { $addToSet: { favorites: carId } },
+        { new: true}
+    );
+    return res.status(200).json({
+        status: "Success",
+        statusCode: 200,
+        data: updatedUser
+    })
+}
+
+const unlikeCar = async (res, user, carId) => {
+    const updatedUser = await User.findByIdAndUpdate(
+        user._id,
+        { $pull: { favorites: carId } },
+        { new: true}
+    );
+    return res.status(200).json({
+        status: "Success",
+        statusCode: 200,
+        data: updatedUser
+    })
+}
