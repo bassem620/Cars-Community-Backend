@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const asyncHandler = require('express-async-handler');
+
 const checkUser = require('../functions/checkUser');
+const errorResponse = require('../functions/errorResponse');
 
 // News database model
 const News = require("../models/newsModel");
@@ -8,13 +10,7 @@ const News = require("../models/newsModel");
 exports.getAllNews = asyncHandler(async (req, res) => {
     const news = await News.find({});
     // Check no errors happend when retrieving all news
-    if(!news) {
-        return res.status(400).json({
-            status: "Failed",
-            statusCode: 400,
-            message: "Error occured"
-        })
-    }
+    if(!news) return errorResponse(res, 400, "Error occured");
     // return success response
     res.status(200).json({
         status: "Success",
@@ -26,22 +22,10 @@ exports.getAllNews = asyncHandler(async (req, res) => {
 exports.getOneNews = asyncHandler(async (req, res) => {
     const { id } = req.params;
     // Check if new id is valid
-    if(!mongoose.Types.ObjectId.isValid(id)){
-        return res.status(400).json({
-            status: "Failed",
-            statusCode: 400,
-            message: "New id is invalid"
-        })
-    }
+    if(!mongoose.Types.ObjectId.isValid(id)) return errorResponse(res, 400, "New id is invalid");
     const news = await News.findOne({_id: id});
     // Check no errors happend when retrieving new
-    if(!news) {
-        return res.status(400).json({
-            status: "Failed",
-            statusCode: 400,
-            message: "New is not found"
-        })
-    }
+    if(!news) return errorResponse(res, 400, "New is not found");
     // return success response
     res.status(200).json({
         status: "Success",
@@ -55,23 +39,11 @@ exports.addNews = asyncHandler(async (req, res) => {
     const user = await checkUser(res, userId, "admin");
     if(!user) return;
     // Check all required fields are sent in the request
-    if(!title || !desc) {
-        return res.status(400).json({
-            status: "Failed",
-            statusCode: 400,
-            message: "Please fill all the fields"
-        });
-    }
+    if(!title || !desc) return errorResponse(res, 400, "Please fill all the fields");
     // Create new New
     const newNews = await News.create(req.body);
     // Check if error occurred
-    if (!newNews) {
-        return res.status(400).json({
-            status: "Failed",
-            statusCode: 400,
-            message: "Error occured during creating new news"
-        });
-    }
+    if (!newNews) return errorResponse(res, 400, "Error occured during creating new news");
     // return success response ( 201 = created successfully)
     return res.status(201).json({
         status: "Success",
@@ -87,22 +59,12 @@ exports.deleteNews = asyncHandler(async (req, res) => {
     const user = await checkUser(res, userId, "admin");
     if(!user) return;
     // Check if news id is valid
-    if(!mongoose.Types.ObjectId.isValid(id)){
-        return res.status(400).json({
-            status: "Failed",
-            statusCode: 400,
-            message: "New id is invalid"
-        })
-    }
+    if(!mongoose.Types.ObjectId.isValid(id)) return errorResponse(res, 400, "New id is invalid");
     const news = await News.findOne({_id: id});
     // Check if the needed new exists
     if(!news) {
         // 404 = NOT FOUND
-        return res.status(404).json({
-            status: "Failed",
-            statusCode: 404,
-            message: "This new is not found"
-        });
+        return errorResponse(res, 404, "This new is not found");
     }
     if(await News.deleteOne({_id: id})) {
         // return success response ( 204 = no content = deleted successfully)
@@ -113,9 +75,5 @@ exports.deleteNews = asyncHandler(async (req, res) => {
         });
     }
     // return fail response
-    return res.status(400).json({
-        status: "Failed",
-        statusCode: 400,
-        message: "Error occured during deleting the new"
-    });
+    return errorResponse(res, 400, "Error occured during deleting the new");
 });
