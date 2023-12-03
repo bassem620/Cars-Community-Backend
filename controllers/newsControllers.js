@@ -35,11 +35,11 @@ exports.getOneNews = asyncHandler(async (req, res) => {
 });
 
 exports.addNews = asyncHandler(async (req, res) => {
-    const { title, desc, userId } = req.body;
+    const { title, desc, image, userId } = req.body;
     const user = await checkUser(res, userId, "admin");
     if(!user) return;
     // Check all required fields are sent in the request
-    if(!title || !desc) return errorResponse(res, 400, "Please fill all the fields");
+    if(!title || !desc || !image) return errorResponse(res, 400, "Please fill all the fields");
     // Create new New
     const newNews = await News.create(req.body);
     // Check if error occurred
