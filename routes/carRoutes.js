@@ -3,6 +3,7 @@ const express = require('express');
 // Controllers
 const {
     getAllCars,
+    getFavorites,
     getOneCar,
     compareTwoCars,
     addCar,
@@ -19,6 +20,7 @@ router.route("/deleteCar/:id").delete(deleteCar);
 
 // User routes
 router.route("/all").get(getAllCars);
+router.route("/favorites").get(getFavorites);
 router.route("/compare").get(compareTwoCars);
 router.route("/likeChange/:id").post(likeChange);
 router.route("/:id").get(getOneCar);

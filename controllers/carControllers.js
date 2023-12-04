@@ -20,6 +20,20 @@ exports.getAllCars = asyncHandler(async (req, res) => {
     });
 });
 
+exports.getFavorites = asyncHandler(async (req, res) => {
+    const { userId } = req.body;
+    const user = await checkUser(res, userId, "user");
+    if(!user) return;
+    await user.populate({
+        path: 'favorites'
+    });
+    res.status(200).json({
+        status: "Success",
+        statusCode: 200,
+        data: user.favorites
+    });
+});
+
 exports.getOneCar = asyncHandler(async (req, res) => {
     const { id } = req.params;
     // Check if car id is valid
