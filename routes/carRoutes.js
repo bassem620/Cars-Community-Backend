@@ -21,7 +21,7 @@ router.route("/deleteCar/:id").delete(deleteCar);
 // User routes
 router.route("/all").get(getAllCars);
 router.route("/favorites").post(getFavorites);
-router.route("/compare").get(compareTwoCars);
+router.route("/compare").post(compareTwoCars);
 router.route("/likeChange/:id").post(likeChange);
 router.route("/:id").get(getOneCar);
 
