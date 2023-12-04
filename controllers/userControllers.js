@@ -11,6 +11,8 @@ exports.signup = asyncHandler(async (req, res) => {
     if (!firstName || !lastName || !email || !password ) return errorResponse(res, 400, "Please fill all the fields");
     // Check that the email is valid and not in use
     if (await User.findOne({ email })) return errorResponse(res, 400, "This email is already in use");
+    // Check that the password is valid
+    if (password.length < 6) return errorResponse(res, 400, "Too short password ");
     // Create a new user
     const user = await User.create({
         firstName: req.body.firstName,    
