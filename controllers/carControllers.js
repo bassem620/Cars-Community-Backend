@@ -14,7 +14,7 @@ exports.getAllCars = asyncHandler(async (req, res) => {
     // Check no errors happend when retrieving all cars
     if(!cars) return errorResponse(res, 400, "Error occured");
     if(userId) {
-        const user = await checkUser(res, userId, "user");
+        const user = await checkUser(res, userId, "both");
         if(!user) return;
         cars = cars.map( car => ({...car._doc, liked: user.favorites.includes(car._id)}))
     }

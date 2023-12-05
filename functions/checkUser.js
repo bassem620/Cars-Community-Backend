@@ -21,7 +21,7 @@ const checkUser = async (res, userId, role = "user") => {
         });
         return null;
     }
-    if(user.role !== role) {
+    if(role !== "both" && user.role !== role) {
         // 401 = not authorized to use this route
         res.status(401).json({
             status: "Failed",
