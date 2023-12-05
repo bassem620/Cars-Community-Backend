@@ -11,11 +11,14 @@ const {
     likeChange
 } = require("../controllers/carControllers");
 
+// Multer controllers
+const {upload} = require("../middlewares/uploadImageMiddleware");
+
 // Router
 const router = express.Router();
 
 // Admin routes
-router.route("/addCar").post(addCar);
+router.route("/addCar").post(upload.single("image"), addCar);
 router.route("/deleteCar/:id").delete(deleteCar);
 
 // User routes

@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const mongoose = require('mongoose');
 
 // Environment variables
@@ -11,6 +12,7 @@ app.use(cors());
 app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use("/user", require("./routes/userRoutes"));

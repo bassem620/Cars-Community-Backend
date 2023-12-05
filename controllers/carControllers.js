@@ -74,13 +74,22 @@ exports.compareTwoCars = asyncHandler(async (req, res) => {
 });
 
 exports.addCar = asyncHandler(async (req, res) => {
-    const { title, desc, price, image, userId } = req.body;
+    const image = req.file;
+    const { title, desc, price, userId } = req.body;
     const user = await checkUser(res, userId, "admin");
     if(!user) return;
+    // Check image
+    if(!image) return errorResponse(res, 400, "Car image is required");
     // Check all required fields are sent in the request
-    if(!title || !desc || !price || !image) return errorResponse(res, 400, "Please fill all the fields");
+    if(!title || !desc || !price) return errorResponse(res, 400, "Please fill all the fields");
     // Create new car
-    const newCar = await Car.create(req.body);
+    const newCar = await Car.create({
+        title,
+        desc,
+        price,
+        userId,
+        image: process.env.SERVER_URL + "/" + image.filename
+    });
     // Check if error occurred
     if (!newCar) return errorResponse(res, 400, "Error occured during creating new car");
     // return success response ( 201 = created successfully)

@@ -35,13 +35,21 @@ exports.getOneNews = asyncHandler(async (req, res) => {
 });
 
 exports.addNews = asyncHandler(async (req, res) => {
-    const { title, desc, image, userId } = req.body;
+    const image = req.file;
+    const { title, desc, userId } = req.body;
     const user = await checkUser(res, userId, "admin");
     if(!user) return;
+    // Check image
+    if(!image) return errorResponse(res, 400, "News image is required");
     // Check all required fields are sent in the request
     if(!title || !desc || !image) return errorResponse(res, 400, "Please fill all the fields");
     // Create new New
-    const newNews = await News.create(req.body);
+    const newNews = await News.create({
+        title,
+        desc,
+        userId,
+        image: process.env.SERVER_URL + "/" + image.filename
+    });
     // Check if error occurred
     if (!newNews) return errorResponse(res, 400, "Error occured during creating new news");
     // return success response ( 201 = created successfully)
