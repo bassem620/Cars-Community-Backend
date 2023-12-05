@@ -9,9 +9,15 @@ const Car = require("../models/carModel");
 const User = require("../models/userModel");
 
 exports.getAllCars = asyncHandler(async (req, res) => {
-    const cars = await Car.find({});
+    const userId = req.headers.authorization;
+    let cars = await Car.find({});
     // Check no errors happend when retrieving all cars
     if(!cars) return errorResponse(res, 400, "Error occured");
+    if(userId) {
+        const user = await checkUser(res, userId, "user");
+        if(!user) return;
+        cars = cars.map( car => ({...car._doc, liked: user.favorites.includes(car._id)}))
+    }
     // return success response
     res.status(200).json({
         status: "Success",
