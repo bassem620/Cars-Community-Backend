@@ -63,7 +63,7 @@ exports.addNews = asyncHandler(async (req, res) => {
 
 exports.deleteNews = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { userId } = req.body;
+    const userId = req.headers.authorization;
     const user = await checkUser(res, userId, "admin");
     if(!user) return;
     // Check if news id is valid

@@ -55,7 +55,7 @@ exports.addEvent = asyncHandler(async (req, res) => {
 
 exports.deleteEvent = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { userId } = req.body;
+    const userId = req.headers.authorization;
     const user = await checkUser(res, userId, "admin");
     if(!user) return;
     // Check if event id is valid
