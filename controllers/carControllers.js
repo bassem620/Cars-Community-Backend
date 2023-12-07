@@ -103,7 +103,7 @@ exports.addCar = asyncHandler(async (req, res) => {
 
 exports.deleteCar = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { userId } = req.body;
+    const userId = req.headers.authorization;
     const user = await checkUser(res, userId, "admin");
     if(!user) return;
     // Check if car id is valid
