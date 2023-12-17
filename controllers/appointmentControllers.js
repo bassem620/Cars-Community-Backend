@@ -9,7 +9,8 @@ const Appointment = require("../models/appointmentModel");
 
 exports.getAllAppointments = asyncHandler(async (req, res) => {
     // Check if logged user is admin
-    const user = await checkUser(res, req.body.userId, "admin");
+    const userId = req.headers.authorization;
+    const user = await checkUser(res, userId, "admin");
     if(!user) return;
     // get all appointments
     const appointments = await Appointment.find({});
@@ -24,7 +25,8 @@ exports.getAllAppointments = asyncHandler(async (req, res) => {
 });
 
 exports.myAppointments = asyncHandler(async (req, res) => {
-    const userId = req.body?.userId;
+    // Check if logged user is admin
+    const userId = req.headers.authorization;
     const user = await checkUser(res, userId, "user");
     if(!user) return;
     const appointments = await Appointment.find({user: user._id});
