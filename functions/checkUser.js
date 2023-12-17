@@ -2,6 +2,9 @@ const User = require('../models/userModel');
 const mongoose = require('mongoose');
 
 const checkUser = async (res, userId, role = "user") => {
+    if(userId.startsWith("Bearer")) {
+        userId = userId.split(" ")[1];
+    }
     // Check if user id is sent in the request
     if(!userId || !mongoose.Types.ObjectId.isValid(userId)) {
         res.status(400).json({
