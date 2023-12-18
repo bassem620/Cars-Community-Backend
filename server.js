@@ -3,9 +3,6 @@ const cors = require("cors");
 const path = require("path");
 const mongoose = require('mongoose');
 
-// Environment variables
-require("dotenv").config();
-
 // Express app
 const app = express();
 app.use(cors());
@@ -31,7 +28,7 @@ app.all('*', (req, res) => {
 });
 
 // Database Connection
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect("mongodb://127.0.0.1:27017/sa-project")
 .then( (conn) => console.log(`Database Connected: ${conn.connection.host}`));
 
 // Port Number
