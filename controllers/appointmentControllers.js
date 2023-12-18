@@ -13,7 +13,7 @@ exports.getAllAppointments = asyncHandler(async (req, res) => {
     const user = await checkUser(res, userId, "admin");
     if(!user) return;
     // get all appointments
-    const appointments = await Appointment.find({});
+    const appointments = await Appointment.find({}).populate({path: "user"});
     // Check no errors happend when retrieving all appointments
     if(!appointments) return errorResponse(res, 400, "Error occured");
     // return success response

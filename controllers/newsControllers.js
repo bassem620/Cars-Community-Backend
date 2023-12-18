@@ -48,7 +48,7 @@ exports.addNews = asyncHandler(async (req, res) => {
         title,
         desc,
         userId,
-        image: process.env.SERVER_URL + "/" + image.filename
+        image: "http://localhost:4000" + "/" + image.filename
     });
     // Check if error occurred
     if (!newNews) return errorResponse(res, 400, "Error occured during creating new news");

@@ -88,7 +88,7 @@ exports.addCar = asyncHandler(async (req, res) => {
         desc,
         price,
         userId,
-        image: process.env.SERVER_URL + "/" + image.filename
+        image: "http://localhost:4000" + "/" + image.filename
     });
     // Check if error occurred
     if (!newCar) return errorResponse(res, 400, "Error occured during creating new car");
